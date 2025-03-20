@@ -19,12 +19,7 @@ let themes = fs
   .map((f) => f.replace('.toml', ''));
 
 function main() {
-  // createBackup();
   const command = process.argv[2];
-
-  // if (existingTheme(command, themesFolderPath)) {
-  // return applyTheme(command, themesFolderPath);
-  // }
 
   if (['--directory', '-d'].includes(command)) {
     if (process.argv[3] === undefined) {
@@ -66,12 +61,6 @@ function main() {
           value: t,
         };
       }),
-      // onState: (state) => {
-      // state.value && applyTheme(state.value, themesFolderPath, true); // set preview true
-      // },
-      // onCancel: (state) => {
-      // revert to backup
-      // },
     });
 
     try {

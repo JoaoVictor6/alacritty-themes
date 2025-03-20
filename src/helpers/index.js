@@ -2,6 +2,8 @@ const fs = require('fs');
 const fsPromises = fs.promises;
 const path = require('path');
 const settings = require('../../settings');
+const { readFileSync, existsSync } = require('fs');
+const { execSync } = require('child_process');
 
 const NoAlacrittyFileFoundError = new Error(
   'No Alacritty configuration file found.\nExpected one of the following files to exist:\n' +
@@ -47,6 +49,35 @@ function themesFolder() {
 
 function isWindows() {
   return process.env.OS === 'Windows_NT';
+}
+
+function isWsl() {
+  try {
+    if (existsSync('/proc/sys/kernel/osrelease')) {
+      const osRelease = readFileSync(
+        '/proc/sys/kernel/osrelease',
+        'utf8'
+      ).toLowerCase();
+      if (osRelease.includes('microsoft')) {
+        return true;
+      }
+    }
+    if (process.env.WSLENV !== undefined) {
+      return true;
+    }
+    const uname = execSync('uname -r', {
+      encoding: 'utf8',
+      stdio: 'pipe',
+    }).toLowerCase();
+
+    if (uname.includes('microsoft')) {
+      return true;
+    }
+
+    return false;
+  } catch (error) {
+    return false;
+  }
 }
 
 function windowsHome() {
@@ -103,7 +134,7 @@ function possibleLocations() {
     );
   }
 
-  if (isWindows()) {
+  if (isWindows() || isWsl()) {
     locations.push(path.join(windowsHome(), 'alacritty/alacritty.toml'));
   }
 
@@ -150,4 +181,5 @@ module.exports = {
   themeFilePath,
   themesFolder,
   windowsHome,
+  isWsl,
 };

@@ -84,9 +84,9 @@ function updateThemeWithFile(themePath, themesPath, tomlPath, preview = false) {
   }
 
   if (currentThemeIndex === undefined) {
-    parsedAlacrittyConfig.import = [themePath];
+    parsedAlacrittyConfig.general.import = [themePath];
   } else {
-    parsedAlacrittyConfig.import[currentThemeIndex] = themePath;
+    parsedAlacrittyConfig.general.import[currentThemeIndex] = themePath;
   }
 
   const newContent = TOML.stringify(parsedAlacrittyConfig);
